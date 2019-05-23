@@ -2278,6 +2278,9 @@ begin
     end;
 
     FillNop(PDscr^, SizeOf(TDescriptor));
+    //>>> me 230519 VSM-467 Sonst schlägt madexcept bufferoverrun zu
+    SetMemPermission(PDscr, SizeOf(TDescriptor), PAGE_READWRITE);
+    //<<<
     FreeMem(PDscr);
   finally
     SetMemPermission(P, sz, OrgAccess);
@@ -2316,7 +2319,10 @@ begin
 
   if Result = 0 then
     RemoveDescriptor(PDscr);
-
+	
+  //>>> me 230519 VSM-467 Sonst schlägt madexcept bufferoverrun zu
+  SetMemPermission(PNxtHook, JmpTypeToSize[tJmpRipZ], PAGE_READWRITE);
+  //<<<
   FreeMem(PNxtHook);
 end;
 
